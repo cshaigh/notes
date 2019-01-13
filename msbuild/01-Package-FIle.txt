@@ -1,0 +1,8 @@
+Useful MSBuild package parameters
+
+DeployOnBuild=true	
+WebPublishMethod=Package
+PackageAsSingleFile=true
+SkipInvalidCOnfigurations=true
+PackageLocation=<path>
+
