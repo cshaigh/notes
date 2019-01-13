@@ -50,3 +50,41 @@ alias figlet=docker run --tty devopshaigh/myfiglet figlet
 figlet "Hello World!"
 
 # NEXT let's do this again with a Dockerfile
+# (see .\Dockerfile)
+docker build --tag devopshaigh/myfiglet:built .
+<#
+
+    Sending build context to Docker daemon  5.632kB
+    Step 1/2 : FROM alpine
+    ---> 3f53bb00af94
+    Step 2/2 : RUN apk add figlet
+    ---> Using cache
+    ---> 534f26bf7260
+    Successfully built 534f26bf7260
+    Successfully tagged devopshaigh/myfiglet:built
+    SECURITY WARNING: You are building a Docker image from Windows against a non-Windows Docker host. All files and directories added to build
+    context will have '-rwxr-xr-x' permissions. It is recommended to double check and reset permissions for sensitive files and directories.
+
+#>
+
+# confirm this image is in your image list
+docker image list
+<#
+
+    REPOSITORY                                         TAG                 IMAGE ID            CREATED             SIZE
+    devopshaigh/myfiglet                                 built               534f26bf7260        19 minutes ago      6.35MB
+
+#>
+
+# push up to docker hub
+docker push devopshaigh/myfiglet:built
+<#
+
+    The push refers to repository [docker.io/devopshaigh/myfiglet]
+    ab7e9e7e2eb6: Pushed
+    7bff100f35cb: Mounted from library/bash
+    built: digest: sha256:f340cb86241de966fbfde06ddba1d86356e801f01706799c6ec85bb7e5f29cb8 size: 739
+
+#>
+
+# TODO: find this on docker hub
