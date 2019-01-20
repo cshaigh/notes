@@ -1,0 +1,109 @@
+Application Insights
+
+4 buckets of telemetry
+
+1. Performance - server and client-side Performance
+2. Usage - track events (user actions) and send telemetry information
+3. Diagnostics - helps find culprits of system problems
+4. Availability - how much time it's up and running and not available
+
+Performance
+
+Client Performance - time to show the UI how long before the bits arrive and rendering time
+Server Performance - how much time do we spend generating the HTML needed to send to the cliient
+What is the impact of dependencies?
+Performance counters - you can add your own counters via config
+
+Custom Telemetry Design
+- Page views
+- Events - you can filter, search and group your data with properties
+
+// Set up some properties
+var properties = new Dictionary <string, string>
+{
+    {
+        "game",
+        currentGame.Name
+    },
+    {
+        "difficulty",
+        currentGame.Difficulty
+    }
+};
+
+var metrics = new Dictionary <string, double>
+{
+    {
+        "score",
+        currentGame.Score
+    },
+    {
+        "opponents",
+        currentGame.OpponentCount
+    }
+};
+
+// Send the event
+telemetry.TrackEvent ("WinGame", properties, metrics)
+
+Server side telemetry - included when App Insights package is added to project
+Client site telemetry - added via adding script to /Shared/Views.cshtml for example
+Application map - how application is broken up
+
+Add custom telemetry
+e.g. in a controller
+
+[HttpPost]
+public ActionResult RemoveFromCart(int id)
+{
+    // Remove the item from the cart
+    var cart = ShoppingCart.GetCart(this.HttpContext);
+
+    // Get the name of the album to display confirmation
+    var album = storeDB.Carts.Single(item => item.RecordId == id).Album;
+
+    // Remove from cart
+    int itemCount = cart.RemoveFromCart(id);
+
+    // log telemetry data to understand when people remove items from the shopping cart
+    LogTelemetryEvent(cart, album);
+
+    // ...
+}
+
+private void LogTelemetryEvent(ShoppingCart cart, Album album)
+{
+    var basketValue = GetShoppingBasketTotalRange(cart);
+
+    TelemetryClient client = new TelemetryClient();
+
+    var properties = new Dictionary<string, string>();
+    properties.Add("Amount segment", GetShoppingBasketTotalRangeSegment(basketValue));
+    properties.Add("Genre", album.Genre.Name);
+    properties.Add("Artist Name", album.Artist.Name);
+    
+    var measurements = new Dictionary<string, double>();
+    measurements.Add("TotalAmount", basketValue);
+
+    client.TrackEvent("Item removed", properties, measurements);
+}
+
+private double GetShoppingBasketTotalRangeSegment(double basketValue)
+{
+    if (basketValue <= 100)
+    {
+        return 100;
+    }
+
+    if (basketValue <= 500)
+    {
+        return 500;
+    }
+
+    if (basketValue <= 1000)
+    {
+        return 1000;
+    }
+
+    return 10000;
+}
