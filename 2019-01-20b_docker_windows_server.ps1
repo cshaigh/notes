@@ -41,36 +41,12 @@ Get-Command -Module PSWindowsUpdate
 # Install all updates
 Install-WindowsUpdate -AcceptAll -AutoReboot -WindowsUpdate -MicrosoftUpdate -Verbose
 
+# Install DockerMsftProvider and Docker
+Install-Module DockerMsftProvider -Force
+Install-Package Docker -ProviderName DockerMsftProvider -Force
+
 # Install containers feature and restart
 Install-WindowsFeature -Name Containers -Restart
 
-# Apparently Docker Daemon (dockerd) is included with Windows Server 2016+ these days.
-
-# Check running
-Get-Service -Name docker
-
-# both client and server should be running natively on windows OS
-docker version
-
-# Install "ContainerImage" Package Provider for Windows Server base image
-Install-PackageProvider -Name ContainerImage -Force
-
 # Test
-Find-ContainerImage
-
-<#
-
-
-
-#>
-
-# Install WindowsServerCore
-Install-ContainerImage -Name WindowsServerCore
-
-docker image list
-<#
-
-
-
-#>
-
+docker run hello-world:nanoserver
