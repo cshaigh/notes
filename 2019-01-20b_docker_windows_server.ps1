@@ -42,8 +42,8 @@ Get-Command -Module PSWindowsUpdate
 Install-WindowsUpdate -AcceptAll -AutoReboot -WindowsUpdate -MicrosoftUpdate -Verbose
 
 # Install DockerMsftProvider and Docker
-Install-Module DockerMsftProvider -Force
-Install-Package Docker -ProviderName DockerMsftProvider -Force
+Install-Module -Name DockerMsftProvider
+Install-Package -Name Docker -ProviderName DockerMsftProvider
 
 # Install containers feature and restart
 Install-WindowsFeature -Name Containers -Restart
