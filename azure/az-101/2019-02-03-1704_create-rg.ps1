@@ -155,3 +155,118 @@ az group update --resource-group plaz-app1-rg --set tags.Owner=BradCocco tags.De
 
 # Erase tags
 Set-AzureRmResourceGroup -Name plaz-prod1-rg -Tag @{}
+
+<#
+
+    Resource Group Locks
+    ====================
+
+    Prevent accidental deletion or changes to resources in resource groups.
+    Consist of two locks: -
+
+    1. CanNotDelete
+    2. ReadOnly
+
+#>
+
+# Create a lock on the Resource Group
+New-AzureRmResourceLock -LockName 'prod1NoDelete' -LockLevel CanNotDelete -ResourceGroupName 'plaz-prod1-rg'
+<#
+
+    Confirm
+    Are you sure you want to create the following lock:
+    /subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-prod1-rg/providers/Microsoft.Authorization/locks/prod1NoDelete
+    [Y] Yes  [N] No  [S] Suspend  [?] Help (default is "Y"): y
+
+
+    Name              : prod1NoDelete
+    ResourceId        : /subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-prod1-rg/providers/Microsoft.Authorization/locks/prod1NoDelete
+    ResourceName      : prod1NoDelete
+    ResourceType      : Microsoft.Authorization/locks
+    ResourceGroupName : plaz-prod1-rg
+    SubscriptionId    : 37737d39-ce91-40f4-9612-6c114c35324d
+    Properties        : @{level=CanNotDelete}
+    LockId            : /subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-prod1-rg/providers/Microsoft.Authorization/locks/prod1NoDelete
+
+#>
+
+# Get locks for a given resource group
+Get-AzureRmResourceLock -ResourceGroupName 'plaz-prod1-rg'
+<#
+
+    Name              : prod1NoDelete
+    ResourceId        : /subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-prod1-rg/providers/Microsoft.Authorization/locks/prod1NoDelete
+    ResourceName      : prod1NoDelete
+    ResourceType      : Microsoft.Authorization/locks
+    ResourceGroupName : plaz-prod1-rg
+    SubscriptionId    : 37737d39-ce91-40f4-9612-6c114c35324d
+    Properties        : @{level=CanNotDelete}
+    LockId            : /subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-prod1-rg/providers/Microsoft.Authorization/locks/prod1NoDelete
+
+#>
+
+# Create resource group lock using Azure CLI
+az lock create --name 'Lockapp1' --lock-type 'ReadOnly' --resource-group 'plaz-app1-rg'
+<#
+
+    {
+    "id": "/subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-app1-rg/providers/Microsoft.Authorization/locks/Lockapp1",
+    "level": "ReadOnly",
+    "name": "Lockapp1",
+    "notes": null,
+    "owners": null,
+    "resourceGroup": "plaz-app1-rg",
+    "type": "Microsoft.Authorization/locks"
+    }
+
+#>
+
+# Get lock ID
+$lockId = (Get-AzureRmResourceLock -ResourceGroupName 'plaz-prod1-rg').LockId
+
+# Remove lock
+Remove-AzureRmResourceLock -LockId $lockId
+<#
+
+    Confirm
+    Are you sure you want to delete the following lock:
+    /subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-prod1-rg/providers/Microsoft.Authorization/locks/prod1NoDelete
+    [Y] Yes  [N] No  [S] Suspend  [?] Help (default is "Y"): y
+    True
+
+#>
+
+# Confirm deletion
+Get-AzureRmResourceLock -ResourceGroupName 'plaz-prod1-rg'
+<#
+
+    Azure:/
+    PS Azure:\>
+
+#>
+
+<#
+
+    Access Control (IAM)
+    ====================
+
+    A system that provides fine-grained access management of resources in Azure.
+    Grant only the amount of access to users needed to perform their jobs.
+
+    Spec
+    ====
+
+    plaz-net-rg
+    -----------
+
+    Inhoff = Owner
+    IT Group = Contributor
+
+    plaz-prod1-rg
+    -------------
+
+    Susan = Owner
+    IT Group = Contributor
+
+#>
+
