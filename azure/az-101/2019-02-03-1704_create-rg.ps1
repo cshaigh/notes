@@ -2,13 +2,28 @@
 
     Resource Group
 
+    Name: plaz-net-rg
+    Need: Prevent unwanted changes to any of the network resources
+    Admin: IT will deploy and maintain RG
+    Notes: Resources in other RGs will use the resources in this group
+    Dept: IT
+    Owner: Inhoff Behili
+
+#>
+
+
+
+<#
+
+    Resource Group
+
     Name: plaz-prod1-rg
     Purpose: Contain the company's VM and their associated dependent resources
     Need: Prevent the accidental deletion of any service or VM
     Admin: IT group will deploy and maintain VMs for the company
     Notes: Resources only in East US location
     Dept: IT
-    Owner: Chris Haigh
+    Owner: Susan Berlin
 
 #>
 
@@ -29,6 +44,37 @@ New-AzureRmResourceGroup -Name 'plaz-prod1-rg' -Location 'West US'
 #>
 
 az group create --name 'plaz-dev-rg' --location 'East US'
+
+<#
+
+    Resource Group
+
+    Name: plaz-app1-rg
+    Purpose: Consolidate the resources needed for an application
+    Need: Isolated from other resources
+    Admin: Developers will need to update the application periodically
+    Notes: No additional resources should be added after application deployment
+    Dept: IT
+    Owner: Brad Thomas
+
+#>
+
+# show this information
+az group show --name 'plaz-dev-rg'
+<#
+
+    {
+        "id": "/subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-dev-rg",
+        "location": "eastus",
+        "managedBy": null,
+        "name": "plaz-dev-rg",
+        "properties": {
+            "provisioningState": "Succeeded"
+        },
+        "tags": null
+    }
+
+#>
 
 <#
 

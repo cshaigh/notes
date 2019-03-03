@@ -31,6 +31,13 @@ Resources: -
 3. **access control (IAM)** - give users abilities to do things within an RG
 4. **policies** - control behaviour
 
+## Example use of resource groups
+
+* **plaz-net-rg** - networks
+* **plaz-prod1-rg** - production environment - VMs etc.
+* **plaz-dev-rg** - research RG, isolated sandbox
+* **plaz-app1-rg** - isolated application and its associates
+
 ## Super-awesome Resource
 
 https://azure.microsoft.com/en-us/resources/templates/
