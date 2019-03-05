@@ -101,3 +101,81 @@
         - "Allowed Locations" built-in policy
 #>
 
+# Assign resource group to variable
+$resourceGroup = Get-AzureRmResourceGroup -Name plaz-dev-rg
+
+# Get desired policy definition
+$policyDefinition = Get-AzureRmPolicyDefinition | Where-Object { $_.Properties.DisplayName -eq "Audit VMs that do not use managed disks" }
+
+# Assign policy definition to resource group
+New-AzureRmPolicyAssignment `
+    -Name "Check for Managed Disks"     
+    -DisplayName "Check for Managed Disks"  
+    -Scope $resourceGroup.ResourceId    
+    -PolicyDefinition $policyDefinition
+
+<#
+
+    Name               : Check for Managed Disks
+    ResourceId         : /subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-dev-rg/providers/Microsoft.Authorization/policyAssignments/Check for Managed Disks
+    ResourceName       : Check for Managed Disks
+    ResourceType       : Microsoft.Authorization/policyAssignments
+    ResourceGroupName  : plaz-dev-rg
+    SubscriptionId     : 37737d39-ce91-40f4-9612-6c114c35324d
+    Properties         : @{displayName=Check for Managed Disks; policyDefinitionId=/providers/Microsoft.Authorization/policyDefinitions/06a78e20-9358-41c9-923c-fb736d382a4d;
+                        scope=/subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-dev-rg; metadata=}
+    Sku                : @{name=A0; tier=Free}
+    PolicyAssignmentId : /subscriptions/37737d39-ce91-40f4-9612-6c114c35324d/resourceGroups/plaz-dev-rg/providers/Microsoft.Authorization/policyAssignments/Check for Managed Disks
+
+#>
+
+# Use CLI to find out commands to manage resource policies.
+az policy --help
+<#
+
+    Group
+        az policy : Manage resource policies.
+
+    Subgroups:
+        assignment     : Manage resource policy assignments.
+        definition     : Manage resource policy definitions.
+        event          : Manage policy events.
+        remediation    : Manage resource policy remediations.
+        set-definition : Manage resource policy set definitions.
+        state          : Manage policy compliance states.
+
+#>
+
+# Use CLI to find out commands to manage resource policy assignments
+az policy assignment --help
+<#
+
+    Group
+        az policy assignment : Manage resource policy assignments.
+
+    Subgroups:
+        identity : Manage a policy assignment's managed identity.
+
+    Commands:
+        create   : Create a resource policy assignment.
+        delete   : Delete a resource policy assignment.
+        list     : List resource policy assignments.
+        show     : Show a resource policy assignment.
+
+#>
+
+# Show all policy definitions
+az policy definition list
+
+# Show accounts in tabular format
+az account list --output table
+<#
+
+    Name         CloudName    SubscriptionId                        State    IsDefault
+    -----------  -----------  ------------------------------------  -------  -----------
+    tandem-payg  AzureCloud   37737d39-ce91-40f4-9612-6c114c35324d  Enabled  True
+
+#>
+
+# See policies assigned to a specific subscription
+az policy assignment list --subscription 37737d39-ce91-40f4-9612-6c114c35324d
